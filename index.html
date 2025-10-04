@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Temperature Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Temperature Converter</h1>
+        <div class="input-group">
+            <input type="number" id="inputTemp" placeholder="Enter value" step="any" />
+            <select id="inputUnit">
+                <option value="C">°C</option>
+                <option value="F">°F</option>
+                <option value="K">K</option>
+            </select>
+            <span style="font-size:1.5rem;">→</span>
+            <select id="outputUnit">
+                <option value="C">°C</option>
+                <option value="F">°F</option>
+                <option value="K">K</option>
+            </select>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        const inputTemp = document.getElementById('inputTemp');
+        const inputUnit = document.getElementById('inputUnit');
+        const outputUnit = document.getElementById('outputUnit');
+        const resultDiv = document.getElementById('result');
+
+        function convertTemperature(value, from, to) {
+            if (from === to) return value;
+            let celsius;
+            // Convert input to Celsius
+            if (from === 'C') celsius = value;
+            else if (from === 'F') celsius = (value - 32) * 5 / 9;
+            else if (from === 'K') celsius = value - 273.15;
+
+            // Convert Celsius to output
+            if (to === 'C') return celsius;
+            else if (to === 'F') return celsius * 9 / 5 + 32;
+            else if (to === 'K') return celsius + 273.15;
+        }
+
+        function showResult() {
+            const val = parseFloat(inputTemp.value);
+            if (isNaN(val)) {
+                resultDiv.textContent = '';
+                return;
+            }
+            const from = inputUnit.value;
+            const to = outputUnit.value;
+            const converted = convertTemperature(val, from, to);
+            let unitSymbol = to === 'C' ? '°C' : (to === 'F' ? '°F' : 'K');
+            resultDiv.textContent = `${converted.toFixed(2)} ${unitSymbol}`;
+            resultDiv.classList.remove('fade-in');
+            void resultDiv.offsetWidth; // trigger reflow for animation
+            resultDiv.classList.add('fade-in');
+        }
+
+        inputTemp.addEventListener('input', showResult);
+        inputUnit.addEventListener('change', showResult);
+        outputUnit.addEventListener('change', showResult);
+
+        // Automation: auto-convert on load with default values
+        window.addEventListener('DOMContentLoaded', () => {
+            inputTemp.value = 0;
+            showResult();
+        });
+    </script>
+</body>
+</html>
